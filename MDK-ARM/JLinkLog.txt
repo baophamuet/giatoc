@@ -1,0 +1,78 @@
+T1360 000:005.402   SEGGER J-Link V7.82 Log File
+T1360 000:005.523   DLL Compiled: Oct 13 2022 13:32:51
+T1360 000:005.529   Logging started @ 2023-06-09 08:30
+T1360 000:005.535 - 5.538ms
+T1360 000:005.545 JLINK_SetWarnOutHandler(...)
+T1360 000:005.552 - 0.010ms
+T1360 000:005.560 JLINK_OpenEx(...)
+T1360 000:007.194   Firmware: J-Link ARM V8 compiled Nov 28 2014 13:44:46
+T1360 000:007.664   Firmware: J-Link ARM V8 compiled Nov 28 2014 13:44:46
+T1360 000:010.477   Hardware: V8.00
+T1360 000:010.488   S/N: 40542002
+T1360 000:010.494   OEM: SEGGER
+T1360 000:010.501   Feature(s): RDI,FlashDL,FlashBP,JFlash,GDB    
+T1360 000:011.773   TELNET listener socket opened on port 19021
+T1360 000:011.919   WEBSRV WEBSRV_Init(): Starting webserver thread(s)
+T1360 000:012.026   WEBSRV Webserver running on local port 19080
+T1360 000:016.330 - 10.778ms returns "O.K."
+T1360 000:016.353 JLINK_GetEmuCaps()
+T1360 000:016.358 - 0.007ms returns 0xB9FF7BBF
+T1360 000:016.366 JLINK_TIF_GetAvailable(...)
+T1360 000:016.659 - 0.298ms
+T1360 000:016.672 JLINK_SetErrorOutHandler(...)
+T1360 000:016.676 - 0.006ms
+T1360 000:016.692 JLINK_ExecCommand("ProjectFile = "D:\Users\baoph\Documents\giatoc\MDK-ARM\JLinkSettings.ini"", ...). 
+T1360 000:026.417 - 9.732ms returns 0x00
+T1360 000:028.942 JLINK_ExecCommand("Device = STM32F103C8", ...). 
+T1360 000:030.945   Device "STM32F103C8" selected.
+T1360 000:031.160 - 2.210ms returns 0x00
+T1360 000:031.170 JLINK_ExecCommand("DisableConnectionTimeout", ...). 
+T1360 000:031.179 - 0.003ms returns 0x01
+T1360 000:031.185 JLINK_GetHardwareVersion()
+T1360 000:031.190 - 0.006ms returns 80000
+T1360 000:031.199 JLINK_GetDLLVersion()
+T1360 000:031.203 - 0.006ms returns 78200
+T1360 000:031.209 JLINK_GetOEMString(...)
+T1360 000:031.215 JLINK_GetFirmwareString(...)
+T1360 000:031.220 - 0.006ms
+T1360 000:036.401 JLINK_GetDLLVersion()
+T1360 000:036.409 - 0.010ms returns 78200
+T1360 000:036.416 JLINK_GetCompileDateTime()
+T1360 000:036.420 - 0.006ms
+T1360 000:038.393 JLINK_GetFirmwareString(...)
+T1360 000:038.402 - 0.011ms
+T1360 000:040.338 JLINK_GetHardwareVersion()
+T1360 000:040.347 - 0.011ms returns 80000
+T1360 000:042.233 JLINK_GetSN()
+T1360 000:042.242 - 0.011ms returns 40542002
+T1360 000:044.188 JLINK_GetOEMString(...)
+T1360 000:047.760 JLINK_TIF_Select(JLINKARM_TIF_JTAG)
+T1360 000:049.167 - 1.415ms returns 0x00
+T1360 000:049.182 JLINK_HasError()
+T1360 000:049.197 JLINK_SetSpeed(5000)
+T1360 000:049.369 - 0.178ms
+T1360 000:049.381 JLINK_GetIdData(pIdData)
+T1360 000:051.526   InitTarget() start
+T1360 000:051.542    J-Link Script File: Executing InitTarget()
+T1360 000:055.357   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T1360 000:057.901   Error: Scanning JTAG chain failed.
+T1360 000:059.678   Can not attach to CPU. Trying connect under reset.
+T1360 000:114.446   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T1360 000:117.209   Error: Scanning JTAG chain failed.
+T1360 000:119.494   Connecting to CPU via connect under reset failed.
+T1360 000:175.309   InitTarget() end
+T1360 000:181.370   Connect failed. Resetting via Reset pin and trying again.
+T1360 000:252.023   InitTarget() start
+T1360 000:252.089    J-Link Script File: Executing InitTarget()
+T1360 000:262.607   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T1360 000:269.092   Error: Scanning JTAG chain failed.
+T1360 000:273.442   Can not attach to CPU. Trying connect under reset.
+T1360 000:330.748   TotalIRLen = ?, IRPrint = 0x..000000000000000000000000
+T1360 000:333.259   Error: Scanning JTAG chain failed.
+T1360 000:335.157   Connecting to CPU via connect under reset failed.
+T1360 000:391.931   InitTarget() end
+T1360 000:391.985 - 342.612ms
+T1360 013:791.458 JLINK_Close()
+T1360 013:801.193 - 9.751ms
+T1360 013:801.213   
+T1360 013:801.218   Closed

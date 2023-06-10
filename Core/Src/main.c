@@ -61,6 +61,36 @@ static void MX_GPIO_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
+	int dem = 0;
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if(GPIO_Pin==GPIO_PIN_0){
+		HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_7);
+		dem++;
+		if(dem%2==1) {
+			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
+		}
+		for(int i=720000000;i>0;i--);
+		
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+		HAL_NVIC_ClearPendingIRQ(EXTI0_IRQn);
+	}
+	if(GPIO_Pin==GPIO_PIN_1)
+	{
+		dem = 0;
+			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
+			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,0);
+		for(int i=720000000;i>0;i--);
+	}
+}
+void play(){
+		if(dem%2==0) {
+			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_6);	
+			HAL_Delay(1000);
+		}else {
+			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
+		}
+}
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -94,22 +124,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		uint16_t pinb1 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_1);
-		uint16_t pinb0;
-		uint16_t dem=0;
-		if (pinb1==0){
-			dem=dem+1;
-			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_7);
-			HAL_Delay(300);
-			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
-		} else
-		if (dem % 2){}else {
-			pinb0 = HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_0);
-			if(pinb0==0){
-				HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_6);	
-				HAL_Delay(300);
-			}
-		}
+		play();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -127,10 +142,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -139,12 +157,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -174,11 +192,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : pause_resume_Pin reset_Pin */
-  GPIO_InitStruct.Pin = pause_resume_Pin|reset_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  /*Configure GPIO pins : PB0 PB1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 4, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 3, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
 }
 
