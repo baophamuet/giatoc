@@ -1,11 +1,11 @@
 --cpu Cortex-M3
 "giatoc\startup_stm32f103xb.o"
+"giatoc\i2c-lcd.o"
 "giatoc\main.o"
 "giatoc\stm32f1xx_it.o"
 "giatoc\stm32f1xx_hal_msp.o"
 "giatoc\stm32f1xx_hal_gpio_ex.o"
-"giatoc\stm32f1xx_hal_tim.o"
-"giatoc\stm32f1xx_hal_tim_ex.o"
+"giatoc\stm32f1xx_hal_i2c.o"
 "giatoc\stm32f1xx_hal.o"
 "giatoc\stm32f1xx_hal_rcc.o"
 "giatoc\stm32f1xx_hal_rcc_ex.o"
@@ -16,6 +16,8 @@
 "giatoc\stm32f1xx_hal_flash.o"
 "giatoc\stm32f1xx_hal_flash_ex.o"
 "giatoc\stm32f1xx_hal_exti.o"
+"giatoc\stm32f1xx_hal_tim.o"
+"giatoc\stm32f1xx_hal_tim_ex.o"
 "giatoc\system_stm32f1xx.o"
 --library_type=microlib --strict --scatter "giatoc\giatoc.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
