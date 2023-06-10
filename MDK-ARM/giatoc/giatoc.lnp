@@ -4,6 +4,7 @@
 "giatoc\main.o"
 "giatoc\stm32f1xx_it.o"
 "giatoc\stm32f1xx_hal_msp.o"
+"giatoc\mpu6050.o"
 "giatoc\stm32f1xx_hal_gpio_ex.o"
 "giatoc\stm32f1xx_hal_i2c.o"
 "giatoc\stm32f1xx_hal.o"
