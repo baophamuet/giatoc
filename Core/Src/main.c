@@ -22,6 +22,7 @@
 #include "stdio.h"
 #include "i2c-lcd.h"
 #include "string.h"
+#include "math.h"
 
 
 /* Private includes ----------------------------------------------------------*/
@@ -81,20 +82,19 @@ static void MX_I2C1_Init(void);
   * @retval int
   */
 		int dem = 0; 
-		char str[10];  // M?ng ch?a chu?i dích
-volatile float x=0;
+	//	char x[10];  // M?ng ch?a chu?i dích
+		//char y[10]; 
+	//	char z[10]; 
+		//char msg[10];
+volatile		char indembuoc[10],demtime[10];
 
-
-
+float mangAmsg[3000];
+volatile int dembuoc=0,chay=0;
+volatile float Ax, Ay, Az, Gx, Gy, Gz,Amsg;
 int16_t Accel_X_RAW = 0;
 int16_t Accel_Y_RAW = 0;
 int16_t Accel_Z_RAW = 0;
 
-int16_t Gyro_X_RAW = 0;
-int16_t Gyro_Y_RAW = 0;
-int16_t Gyro_Z_RAW = 0;
-
-volatile float Ax, Ay, Az, Gx, Gy, Gz;
 
 
 void MPU6050_Init (void)
@@ -133,6 +133,7 @@ void MPU6050_Init (void)
 void MPU6050_Read_Accel (void)
 {
 	uint8_t Rec_Data[6];
+	++chay;
 
 	// Read 6 BYTES of data starting from ACCEL_XOUT_H register
 
@@ -150,31 +151,17 @@ void MPU6050_Read_Accel (void)
 	Ax = Accel_X_RAW/16384.0;
 	Ay = Accel_Y_RAW/16384.0;
 	Az = Accel_Z_RAW/16384.0;
+	Amsg = sqrt(Ax*Ax+Ay*Ay+Az*Az);
+	mangAmsg[chay]= Amsg;
+	if ((mangAmsg[chay]>1.1)&&(mangAmsg[chay] > mangAmsg[chay -1])){
+		if(dem%2==1){
+					dembuoc = dembuoc;
+		}else	{
+			++dembuoc;
+			for(int i=720000000;i>0;i--);
+		}
+	}
 }
-
-
-void MPU6050_Read_Gyro (void)
-{
-	uint8_t Rec_Data[6];
-
-	// Read 6 BYTES of data starting from GYRO_XOUT_H register
-
-	HAL_I2C_Mem_Read (&hi2c1, MPU6050_ADDR, GYRO_XOUT_H_REG, 1, Rec_Data, 6, 1000);
-
-	Gyro_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data [1]);
-	Gyro_Y_RAW = (int16_t)(Rec_Data[2] << 8 | Rec_Data [3]);
-	Gyro_Z_RAW = (int16_t)(Rec_Data[4] << 8 | Rec_Data [5]);
-
-	/*** convert the RAW values into dps (°/s)
-	     we have to divide according to the Full scale value set in FS_SEL
-	     I have configured FS_SEL = 0. So I am dividing by 131.0
-	     for more details check GYRO_CONFIG Register              ****/
-
-	Gx = Gyro_X_RAW/131.0;
-	Gy = Gyro_Y_RAW/131.0;
-	Gz = Gyro_Z_RAW/131.0;
-}
-
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -191,7 +178,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 	if(GPIO_Pin==GPIO_PIN_1)
 	{
-		dem = 0;
+		dem = 0;// reset dem button
+		dembuoc=0;//reset dem buoc chan
+		chay=0;
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,0);
 		lcd_clear();
@@ -203,15 +192,25 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 void play(){
 		MPU6050_Read_Accel();
-		MPU6050_Read_Gyro();
-		snprintf(str, sizeof(str), "%f", Ax);
+	//	snprintf(x, sizeof(x), "%f", Ax);
+//		snprintf(y, sizeof(y), "%f", Ay);
+	//	snprintf(z, sizeof(z), "%f", Az);
+	//	snprintf(msg, sizeof(z), "%f", Amsg);
+		sprintf(indembuoc, "%d", dembuoc);
+		sprintf(demtime, "%d", chay);
 		if(dem%2==0) {			
 	  HAL_Delay(100);
 			lcd_clear();
 		lcd_put_cur(0,0);
 			lcd_send_string("So buoc : ");
 		lcd_put_cur(0,10);
-			lcd_send_string(str);
+			lcd_send_string(indembuoc);
+			lcd_put_cur(1,0);
+			lcd_send_string("Thoi gian : ");
+			lcd_put_cur(1,12);
+		lcd_send_string(demtime);
+				lcd_put_cur(1,15);
+		lcd_send_string("s");	
 			HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_6);	
 			HAL_Delay(1000);
 		}else {
@@ -219,8 +218,9 @@ void play(){
 			lcd_clear();
 		lcd_put_cur(0,0);
 		lcd_send_string("PAUSE-----------");
-		lcd_put_cur(1,1);	
-		lcd_send_string(str);
+		lcd_put_cur(1,0);	
+		lcd_send_string("Tong so : ");
+		lcd_send_string(indembuoc);
 			HAL_Delay(1000);
 		}
 }
