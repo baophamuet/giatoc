@@ -58,7 +58,7 @@ static void MX_I2C1_Init(void);
 
 
 #define MPU6050_ADDR 0xD0
-
+#define OFFSET 1.1
 
 #define SMPLRT_DIV_REG 0x19
 #define GYRO_CONFIG_REG 0x1B
@@ -86,11 +86,11 @@ static void MX_I2C1_Init(void);
 		//char y[10]; 
 	//	char z[10]; 
 		//char msg[10];
-volatile		char indembuoc[10],demtime[10];
+char indembuoc[10],demtime[10];
 
 float mangAmsg[3000];
-volatile int dembuoc=0,chay=0;
-volatile float Ax, Ay, Az, Gx, Gy, Gz,Amsg;
+ int dembuoc=0,chay=1;
+ float Ax, Ay, Az, Gx, Gy, Gz,Amsg;
 int16_t Accel_X_RAW = 0;
 int16_t Accel_Y_RAW = 0;
 int16_t Accel_Z_RAW = 0;
@@ -157,12 +157,12 @@ void MPU6050_Read_Accel (void)
 	Az = Accel_Z_RAW/16384.0;
 	Amsg = sqrt(Ax*Ax+Ay*Ay+Az*Az);
 	mangAmsg[chay]= Amsg;
-	if ((mangAmsg[chay]>1.1)&&(mangAmsg[chay] > mangAmsg[chay -1])){
+	if ((mangAmsg[chay-1] > mangAmsg[chay])&&(mangAmsg[chay - 1] > OFFSET)&&(mangAmsg[chay - 1] > mangAmsg[chay - 2])){
 		if(dem%2==1){
 					dembuoc = dembuoc;
-		}else	{
+		}else 	{
 			++dembuoc;
-			for(int i=720000000;i>0;i--);
+		for(int i=100;i>0;i--);
 		}
 	}
 }
@@ -184,7 +184,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		dem = 0;// reset dem button
 		dembuoc=0;//reset dem buoc chan
-		chay=0;
+		int i;
+		for(i=0;i<=chay;i++){
+			mangAmsg[chay]=0;	
+		}
+		chay=1;
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,0);
 			HAL_GPIO_WritePin(GPIOA,GPIO_PIN_7,0);
 		lcd_clear();
@@ -201,9 +205,9 @@ void play(){
 	//	snprintf(z, sizeof(z), "%f", Az);
 	//	snprintf(msg, sizeof(z), "%f", Amsg);
 		sprintf(indembuoc, "%d", dembuoc);
-		sprintf(demtime, "%d", chay);
+		sprintf(demtime, "%d", chay-1);
 		if(dem%2==0) {			
-	  HAL_Delay(100);
+	  //HAL_Delay(100);
 			lcd_clear();
 		lcd_put_cur(0,0);
 			lcd_send_string("So buoc : ");
